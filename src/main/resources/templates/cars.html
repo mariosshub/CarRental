@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" ;
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+
+<head>
+    <link href="../../webjars/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>Insert title here</title>
+    <script type="text/javascript" src="../../webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../../webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <link type="text/css"  href="../../css/cars.css" rel="stylesheet">
+    <meta charset="UTF-8">
+
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Car Rental Website</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+                </li>
+                </li>
+                <li sec:authorize="hasAuthority('RENTER')" class="nav-item">
+                    <a class="nav-link " href="/api/renter/cars">View cars</a>
+                </li>
+                <li sec:authorize="hasAuthority('RENTER')" class="nav-item">
+                    <a class="nav-link " href="/api/renter/rental">Your Rentals</a>
+                </li>
+            </ul>
+
+            <div style="height: 40px" sec:authorize="isAuthenticated()">
+                <div class="nav-item dropdown ml-auto">
+                    <a style="font-size: large" href="#" class="nav-link " data-toggle="dropdown"><div class="dropdown-toggle" sec:authentication="name"></div></a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a style="padding-left:55px " sec:authorize="hasAuthority('RENTER')" href="/api/renter/showProfile" class="dropdown-item">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a style="padding-left:55px" href="/logout"class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<br><br><br><br>
+<h2 th:if="${cars.isEmpty()} " style="padding-left: 250px">No available cars</h2>
+<br><br>
+<div th:if="${!cars.isEmpty()}"id="main-content" class="blog-page ">
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-8 col-md-12 left-box" >
+                <div th:each="car : ${cars}" class="card single_post">
+                    <div class="body">
+                        <div th:if="${!car.image.isBlank()}" class="img-post">
+                             <a href="">
+                                 <img style="max-height: 100%; max-width: 100%;" th:src="*{'data:image/jpg;base64,'+ car.image}" alt="#" />
+                             </a>
+                        </div>
+                        <h3><span th:text="${car.company}"></span><span style="padding-left: 30px" th:text="${car.model}"></span> </h3>
+                        <br>
+                        <label>Owner: </label> <a href="#" style="display: inline; padding-left: 20px" th:text="${car.owner}"></a>
+                        <br><br>
+                        <label>Price: </label> <p style="display: inline; padding-left: 30px; font-weight: 600"; th:text="${car.price}"></p><span>€</span> <sub>per day</sub>
+                    </div>
+                    <div class="footer">
+                        <div class="actions">
+                            <a th:href="@{'/api/renter/getCar/'+ ${car.id}}" class="btn btn-outline-secondary">See more</a>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="pagination pagination-primary">
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);">1</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);">Next</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="successModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 style="color: blue" class="modal-title">Success!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 id="s1"></h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var url = window.location.href;
+    if (url.indexOf('?successful') != -1){
+        $('#s1').text("Rent Successful");
+        $('#successModal').modal('show');
+    }
+</script>
+</body>
+</html>

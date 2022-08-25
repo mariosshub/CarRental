@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" ;
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+
+<head>
+    <link href="../../webjars/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>Insert title here</title>
+    <script type="text/javascript" src="../../webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../../webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Car Rental Website</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+                </li>
+                </li>
+                <li sec:authorize="hasAuthority('RENTER')" class="nav-item">
+                    <a class="nav-link " href="/api/renter/cars">View cars</a>
+                </li>
+                <li sec:authorize="hasAuthority('RENTER')" class="nav-item">
+                    <a class="nav-link " href="/api/renter/rental">Your Rentals</a>
+                </li>
+            </ul>
+
+            <div style="height: 40px" sec:authorize="isAuthenticated()">
+                <div class="nav-item dropdown ml-auto">
+                    <a style="font-size: large" href="#" class="nav-link " data-toggle="dropdown"><div class="dropdown-toggle" sec:authentication="name"></div></a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a style="padding-left:55px " sec:authorize="hasAuthority('RENTER')" href="/api/renter/showProfile" class="dropdown-item">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a style="padding-left:55px" href="/logout"class="dropdown-item">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<br><br><br>
+<h2 th:if="${transactions.isEmpty()} " align="center">You dont have any rented cars</h2>
+<br><br>
+<div th:if="${!transactions.isEmpty()}" class="container">
+    <h2 style="padding-bottom: 20px" align="center">Your current rents</h2>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Car Model</th>
+                    <th scope="col">Car Company</th>
+                    <th scope="col">Owner</th>
+                    <th scope="col">Day of Book</th>
+                    <th scope="col">Day of Return</th>
+                    <th scope="col">Total cost</th>
+                    <th class="table-success" scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="transaction : ${transactions}">
+                    <td th:text="${transaction.car.model}"></td>
+                    <td th:text="${transaction.car.company}"></td>
+                    <td th:text="${transaction.owner.username}"></td>
+                    <td th:text="${transaction.startDate.toString()}"></td>
+                    <td th:text="${transaction.endDate.toString()}"></td>
+                    <td><span th:text="${transaction.cost}"></span><span>€</span></td>
+                    <td id="status" class="table-success" th:text="${transaction.status}"></td>
+                    <div th:if="${transaction.status == T(com.example.CarRental.model.Status).COMPLETED}">
+                        <td th:if="${transaction.review == null}">
+                            <a th:href="@{'/api/renter/createReview/' + ${transaction.id}}" id="reviewButton" class="btn-primary"><p style="color: blue">Write Review</p></a>
+                        </td>
+                        <td th:if="${transaction.review !=null and (transaction.review.ratingForRenter == null or transaction.review.messageForRenter == null)}">
+                            <a th:href="@{'/api/renter/createReview/' + ${transaction.id}}" id="reviewButton2" class="btn-primary"><p style="color: blue">Write Review</p></a>
+                        </td>
+                    </div>
+                    <td th:if="${transaction.review !=null and (transaction.review.ratingForOwner != null or transaction.review.messageForOwner != null)}">
+                        <a th:href="@{/api/renter/seeReview/(trId=${transaction.id})}" id="seeReviewButton" class="btn-secondary"><p style="color: blue">See Review</p></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal" id="successModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thank you for your review!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3>Review made Successfully!</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--         modal for review-->
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <form method="post" id="reviewForm">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Write a review about the car</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="rating" class="col-form-label">Rating:</label>
+                        <select id="rating" name="ratingForRenter">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="4">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comments" class="col-form-label">Comments:</label>
+                        <textarea class="form-control" id="comments" name="messageForRenter"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Send message</button>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+<!--see review modal-->
+<div class="modal fade" id="seeReviewModal" tabindex="-1" role="dialog" aria-labelledby="seeReviewModalLabel" aria-hidden="true">
+    <form>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="seeReviewModalLabel">The review about the car</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="ratingReview" class="col-form-label">Rating:</label>
+                            <input  style="border: none; display: inline; width: 8%; background-color: white" readonly type="text" class="form-control" id="ratingReview" name="rating">
+                            <span style="display: inline">stars</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="messageReview" class="col-form-label">Comments:</label>
+                            <textarea style="border: none; background-color: white" readonly class="form-control" id="messageReview" name="message"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    var url = window.location.href;
+    if(url.indexOf('?review_sent') != -1) {
+        $('#successModal').modal('show');
+    }
+    $('document').ready(function () {
+        $('.container #reviewButton').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            $('#reviewModal #reviewForm').attr('action', href);
+            $('#reviewModal').modal();
+        });
+        $('.container #reviewButton2').on('click', function (event) {
+            event.preventDefault();
+            var href = $(this).attr('href');
+            $('#reviewModal #reviewForm').attr('action', href);
+            $('#reviewModal').modal();
+        });
+        $('.container #seeReviewButton').on('click', function (event) {
+            event.preventDefault();
+            $.get($(this).attr('href'), function (review, status){
+                $('#ratingReview').val(review.rating);
+                $('#messageReview').val(review.message);
+            });
+            $('#seeReviewModal').modal();
+        });
+    });
+</script>
+</body>
+</html>

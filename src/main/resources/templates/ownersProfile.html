@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" ;
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="../../webjars/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="../../webjars/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../../webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../webjars/bootstrap/4.6.0/js/bootstrap.js"></script>
+
+    <title>Your profile</title>
+    <!-- Font Icons -->
+    <link type="text/css" rel="stylesheet" href="../../fonts/material-icon/css/material-design-iconic-font.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500&display=swap" rel="stylesheet">
+
+    <!-- Date Picker CSS -->
+    <link type="text/css" href="../../vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link type="text/css" href="../../vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+
+    <link rel="stylesheet" href="../../vendor/jquery-ui/jquery-ui.min.css">
+    <link type="text/css"  href="../../css/main.css" rel="stylesheet" media="all">
+
+    <style>
+        .field-icon {
+            float: right;
+            margin-right: 17px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+            color: #555; }
+
+        body{
+            background: #f7f7ff;
+            margin-top:20px;
+        }
+        .card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid transparent;
+            border-radius: .25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+        }
+        .me-2 {
+            margin-right: .5rem!important;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Car Rental Website</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li sec:authorize="hasAuthority('OWNER')" class="nav-item">
+                    <a class="nav-link" href="/api/owner/showCars">Cars</a>
+                </li>
+                <li sec:authorize="hasAuthority('OWNER')" class="nav-item">
+                    <a class="nav-link " href="/api/owner/transactions">Transactions</a>
+                </li>
+                <li sec:authorize="hasAuthority('RENTER')" class="nav-item">
+                    <a class="nav-link " href="/api/renter/cars">View cars</a>
+                </li>
+                <li sec:authorize="hasAuthority('RENTER')" class="nav-item">
+                    <a class="nav-link " href="/api/renter/rental">Rents</a>
+                </li>
+            </ul>
+
+            <div sec:authorize="isAuthenticated()" class="nav-item dropdown">
+                <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle mr-4" sec:authentication="name"></a>
+                <div class="dropdown-menu dropdown-menu-left action-form" style=" width: fit-content; right: 0;  padding: 10px 15px; border: none;">
+                    <p>Hello <span sec:authentication="name"></span></p>
+                    <a href="/logout" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+                </div>
+            </div>
+            <form sec:authorize="isAnonymous" class="form-inline mt-2 mt-md-0"style="padding-right:6px;">
+                <a class="btn btn-outline-success my-2 my-sm-0"href="/login">Log In</a>
+            </form>
+            <form  sec:authorize="isAnonymous()" class="form-inline mt-2 mt-md-0"style="padding-right:6px;">
+                <a class="btn btn-outline-success my-2 my-sm-0"href="/signup">Register</a>
+            </form>
+        </div>
+    </nav>
+</header>
+<br><br><br><br>
+<div class="container">
+    <div class="main-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-column align-items-center text-center">
+                            <img src="https://st3.depositphotos.com/4111759/13425/v/600/depositphotos_134255532-stock-illustration-profile-placeholder-male-default-profile.jpg" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+                            <div class="mt-3">
+                                <h4 id="firstName2"></h4>
+                                <p id="username1" class="text-secondary mb-1"></p>
+                                <p id="role" class="text-muted font-size-sm"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" th:action="@{/api/owner/editProfile}" th:object="${owner}">
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">First Name</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input th:field="*{firstName}" type="text" name="firstName" id="firstName"class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">SurName</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input th:field="*{lastName}" type="text" name="lastName" id="lastName"  class="form-control">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Email</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input th:field="*{email}" type="text" name="email" id="email" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Birthdate</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input style="background-color: white" class="form-control js-datepicker" th:field="*{birthDate}" type="text" readonly placeholder="Birthdate" id="datePicker" name="birthday" />
+                                    <i class="zmdi zmdi-calendar-note field-icon js-btn-calendar"></i>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">Old password</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input type="password" class="form-control" th:field="*{passwordOld}" name="password" id="passwordOld" placeholder="Type your old password" />
+                                    <span toggle="#passwordOld" class="zmdi zmdi-eye field-icon toggle-password"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">New password</h6>
+                                </div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input type="password" class="form-control" th:field="*{passwordNew}" name="password" id="passwordNew" placeholder="Type your new password" />
+                                    <span toggle="#passwordNew" class="zmdi zmdi-eye field-icon toggle-password"></span>
+                                </div>
+                            </div>
+                            <input hidden id="roleHidden" th:field="*{role}">
+                            <div class="row">
+                                <div class="col-sm-3"></div>
+                                <div class="col-sm-9 text-secondary">
+                                    <input type="submit" class="btn btn-primary px-4" value="Save Changes">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="successModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Success!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5 id="s1"></h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const url = window.location.href;
+    if(url.indexOf('?settings_changed') != -1) {
+        $('#s1').text("Your profile settings changed successfully")
+        $('#successModal').modal('show');
+    }
+    $(window).on('load', function() {
+        $.get("/api/owner/getProfile", function (owner){
+            $('#firstName2').text(owner.firstName);
+            $('#username1').text(owner.username);
+            $('#role').text(owner.role);
+            $('#roleHidden').val(owner.role)
+            $('#firstName').val(owner.firstName);
+            $('#lastName').val(owner.lastName);
+            $('#datePicker').val(owner.birthDate);
+            $('#email').val(owner.email);
+        });
+    });
+</script>
+<!-- JS -->
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../vendor/jquery-ui/jquery-ui.min.js"></script>
+<script src="../../vendor/jquery/jquery.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<!-- Jquery JS-->
+<script src="../../vendor/datepicker/jquery/jquery.min.js"></script>
+<!-- Vendor JS-->
+<script src="../../vendor/datepicker/moment.min.js"></script>
+<script src="../../vendor/datepicker/daterangepicker.js"></script>
+<!-- Main JS-->
+<script src="../../js/global.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car images</title>
+</head>
+<body>
+<div align="center" class="container">
+    <h1>Your car images:</h1>
+    <br><br>
+        <div th:each="image : ${img}">
+            <img style="width: 400px; height: 350px" th:src="*{'data:image/jpg;base64,'+ image}" alt="#" />
+            <hr>
+            <br><br><br>
+        </div>
+</div>
+</body>
+</html>

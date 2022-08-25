@@ -1,0 +1,235 @@
+  <!DOCTYPE html>
+  <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" ;
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
+
+<head>
+  <link href="../../webjars/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <title>Insert title here</title>
+  <script type="text/javascript" src="../../webjars/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="../../webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../../js/edit.js" th:src="@{../../js/edit.js}"></script>
+  <link type="text/css"  href="../../css/show.css" rel="stylesheet">
+  <meta charset="UTF-8">
+
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">Car Rental Website</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/home">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/api/owner/showCars">Cars</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="/api/owner/transactions">Transactions</a>
+        </li>
+      </ul>
+
+      <div style="height: 40px" sec:authorize="isAuthenticated()">
+        <div class="nav-item dropdown ml-auto">
+          <a style="font-size: large" href="#" class="nav-link " data-toggle="dropdown"><div class="dropdown-toggle" sec:authentication="name"></div></a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a style="padding-left:55px" sec:authorize="hasAuthority('OWNER')" href="/api/owner/showProfile" class="dropdown-item">Profile</a>
+            <div class="dropdown-divider"></div>
+            <a style="padding-left:55px" href="/logout"class="dropdown-item">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<br><br>
+<h2 align="center">Your cars</h2>
+
+<h3 style="margin-right: 10px; padding-left: 5px; display: inline">Insert new car</h3>
+<button type="button" class="btn btn-primary tooltips" data-placement="top"  data-toggle="modal" data-original-title="Add" data-target="#addModal"><i class="fa fa-plus"></i></button>
+
+<hr class="featurette-divider">
+<div class="container">
+  <div class="row">
+    <div  th:each="car : ${cars}" class="col-md-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body ">
+          <div class="col-6 card-title align-self-center mb-0">
+            <div style="width: 180px" th:if="${!car.image.isBlank()}">
+            <a th:href="@{'/api/owner/getCarImage/' + ${car.id}}"> <img th:src="*{'data:image/jpg;base64,'+ car.image}" class="img-fluid rounded w-60" alt="#"/></a>
+            </div>
+          </div>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Model: <i class=" float-right" th:text="${car.model}"></i></li>
+          <li class="list-group-item">Company: <i class=" float-right" th:text="${car.company}"></i></li>
+          <li class="list-group-item">Age: <i class=" float-right" th:text="${car.age}"></i></li>
+          <li class="list-group-item">cc: <i class=" float-right" th:text="${car.cc}"></i></li>
+          <li class="list-group-item">Price: <i class=" float-right" th:text="${car.price}"></i></li>
+          <li class="list-group-item">Address: <i class=" float-right" th:text="${car.location}"></i></li>
+          <li class="list-group-item">City: <i class=" float-right" th:text="${car.city}"></i></li>
+          <li class="list-group-item">Available: <i class=" float-right" th:text="${car.available}"></i></li>
+          <li class="list-group-item">Available From: <i class=" float-right" th:text="${car.availableFrom}"></i></li>
+          <li class="list-group-item">Available Until: <i class=" float-right" th:text="${car.availableUntil}"></i></li>
+
+        </ul>
+        <div class="card-body">
+          <div class="btn-group btn-group-sm">
+            <a th:href="@{/api/cars/getOne/(Id=${car.id})}" id="editButton" class="btn btn-primary" ><i class="fa fa-pencil"></i> </a>
+            <a th:href="@{/api/owner/cars/delete/(carId=${car.id})}"id="deleteButton" class="btn btn-danger"><i class="fa fa-times"></i></a>
+<!--            <button type="button" class="btn btn-secondary tooltips" data-placement="top"  data-toggle="modal" data-original-title="Delete" data-target="#deleteModal"><i class="fa fa-times"></i></button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+         <!--Modal for add-->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+  <form th:action="@{/api/owner/cars/new}" method="post" enctype="multipart/form-data">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AddModalLabel">New Car</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modelAdd" class="col-form-label">Model:</label>
+            <input type="text" class="form-control" id="modelAdd" name="model" required>
+          </div>
+          <div class="form-group">
+            <label for="companyAdd" class="col-form-label">Company:</label>
+            <input type="text" class="form-control" id="companyAdd" name="company" required>
+          </div>
+          <div class="form-group">
+            <label for="ageAdd" class="col-form-label">Age:</label>
+            <input type="text" class="form-control" id="ageAdd" name="age" required>
+          </div>
+          <div class="form-group">
+            <label for="ccAdd" class="col-form-label">CC:</label>
+            <input type="text" class="form-control" id="ccAdd" name="cc" required>
+          </div>
+          <div class="form-group">
+            <label for="priceAdd" class="col-form-label">Price:</label>
+            <input type="text" class="form-control" id="priceAdd" name="price" required>
+          </div>
+          <div class="form-group">
+            <label for="locationAdd" class="col-form-label">Address:</label>
+            <input type="text" class="form-control" id="locationAdd" name="location" required>
+          </div>
+          <div class="form-group">
+            <label for="cityAdd" class="col-form-label">City:</label>
+            <input type="text" class="form-control" id="cityAdd" name="city" required>
+          </div>
+          <div class="form-group">
+            <label for="availableFrom" class="col-form-label">Available From:</label>
+            <input type="time" class="form-control" id="availableFrom" name="availableFrom" required>
+          </div>
+          <div class="form-group">
+            <label for="availableUntil" class="col-form-label">Available Until:</label>
+            <input type="time" class="form-control" id="availableUntil" name="availableUntil" required>
+          </div>
+          <div>
+            <input type="file" name="images" class="form-control-file" accept="image/jpeg" multiple>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!--Modal for edit-->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <form th:action="@{/api/owner/cars/edit}" method="put" enctype="multipart/form-data">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Car</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" hidden>
+            <label for="idEdit" class="col-form-label">Id:</label>
+            <input type="text" class="form-control" id="idEdit" name="id">
+          </div>
+          <div class="form-group">
+            <label for="modelEdit" class="col-form-label">Model:</label>
+            <input type="text" class="form-control" id="modelEdit" name="model">
+          </div>
+          <div class="form-group">
+            <label for="companyEdit" class="col-form-label">Company:</label>
+            <input type="text" class="form-control" id="companyEdit" name="company">
+          </div>
+          <div class="form-group">
+            <label for="ageEdit" class="col-form-label">Age:</label>
+            <input type="text" class="form-control" id="ageEdit" name="age">
+          </div>
+          <div class="form-group">
+            <label for="ccEdit" class="col-form-label">CC:</label>
+            <input type="text" class="form-control" id="ccEdit" name="cc">
+          </div>
+          <div class="form-group">
+            <label for="priceEdit" class="col-form-label">Price:</label>
+            <input type="text" class="form-control" id="priceEdit" name="price">
+          </div>
+          <div class="form-group">
+            <label for="locationEdit" class="col-form-label">Location:</label>
+            <input type="text" class="form-control" id="locationEdit" name="location">
+          </div>
+          <div class="form-group">
+            <label for="cityEdit" class="col-form-label">City:</label>
+            <input type="text" class="form-control" id="cityEdit" name="city" required>
+          </div>
+          <div class="form-group">
+            <label for="availableFromEdit" class="col-form-label">Available From:</label>
+            <input type="time" class="form-control" id="availableFromEdit" name="availableFrom" required>
+          </div>
+          <div class="form-group">
+            <label for="availableUntilEdit" class="col-form-label">Available Until:</label>
+            <input type="time" class="form-control" id="availableUntilEdit" name="availableUntil" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Edit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- Modal For Delete-->
+<div class="modal fade" id="deleteModal" name="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="DeleteModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this car?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="" id="delRef" class="btn btn-primary">Yes, Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+</body>
+</html>

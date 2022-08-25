@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>Please Log in</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+
+<style>
+  body{
+    background-image: url("../images/signup-bg.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    padding: 115px 0;
+
+  }
+  .container {
+    background-color: white;
+    width: 600px;
+    height: fit-content;
+    position: relative;
+    margin: 0 auto;
+    border-radius: 22px
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <form class="form-signin" method="post" th:action="@{/login}" >
+    <h2 class="form-signin-heading">Please Log in</h2>
+    <div th:if="${param.error}" class="alert alert-error">
+      Invalid username and password.
+    </div>
+    <div th:if="${param.logout}" class="alert alert-success">
+      You have been logged out.
+    </div>
+    <p>
+      <label for="username" class="sr-only">Username</label>
+      <input type="text"  id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+    </p>
+    <p>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password"  id="password" name="password" class="form-control" placeholder="Password" required>
+    </p>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+  </form>
+</div>
+</body></html>

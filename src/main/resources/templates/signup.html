@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>User Registration</title>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Font Icons -->
+  <link type="text/css" rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500&display=swap" rel="stylesheet">
+
+  <!-- Date Picker CSS -->
+  <link type="text/css" href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+  <link type="text/css" href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+
+  <link rel="stylesheet" href="vendor/jquery-ui/jquery-ui.min.css">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+  <!-- Main css -->
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css"  href="css/main.css" rel="stylesheet" media="all">
+</head>
+
+<body>
+<div class="main">
+  <section class="signup">
+    <div class="container">
+      <div class="signup-content">
+        <form method="POST" th:action="@{/signup}" th:object="${user}" id="signup-form" class="signup-form">
+          <h2 class="form-title">Create account</h2>
+          <div class="form-group">
+            <select class="form-control form-select">
+              <option value="mr">Mr.</option>
+              <option value="mrs">Mrs.</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <div class="row g-2">
+              <div class="col">
+                <input type="text" class="form-control" th:field="*{firstName}" name="firstname" id="first_name" placeholder="First Name " required/>
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" th:field="*{lastName}"name="lastname" id="last_name" placeholder="Last Name " required/>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="email" class="form-control" th:field="*{email}" name="email" id="email" placeholder="Email Address" required/>
+          </div>
+          <div class="form-group">
+            <input style="background-color: white" class="form-control js-datepicker" th:field="*{birthDate}" type="text" readonly placeholder="Birthdate" id="datePicker" name="birthday" />
+            <i class="zmdi zmdi-calendar-note field-icon js-btn-calendar"></i>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" th:field="*{username}" name="username" id="username" placeholder="Username" required/>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" th:field="*{password}" name="password" id="password" placeholder="Password" required/>
+            <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" name="re_password" id="re_password" placeholder="Repeat your password" required/>
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <div th:each="role : ${T(com.example.CarRental.model.Role).values()}">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" th:field="*{role}" th:value="${role}" class="custom-control-input" required>
+                <label class="custom-control-label" th:for="${#ids.prev('role')}" th:text="${role.toString().toLowerCase()}">Role</label>
+              </div>
+            </div>
+          </div>
+          <div id="exp" style="display: none" class="form-group">
+            <label>Exprerience</label>
+            <div th:each="experience : ${T(com.example.CarRental.model.Experience).values()}">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" th:field="*{experience}" th:value="${experience}" class="custom-control-input">
+                <label class="custom-control-label" th:for="${#ids.prev('experience')}" th:text="${experience.toString().toLowerCase()}">Experience</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" required/>
+            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in <a href="#" class="term-service">Terms of service</a></label>
+          </div>
+          <div class="form-group">
+            <button type="submit" name="submit" id="submit" class="form-submit">Sign Up</button>
+          </div>
+        </form>
+        <p class="loginhere">
+          Have already an account ? <a href="#" class="loginhere-link">Login here</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- JS -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/jquery-ui/jquery-ui.min.js"></script>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="js/main.js"></script>
+
+<!-- Jquery JS-->
+<script src="vendor/datepicker/jquery/jquery.min.js"></script>
+<!-- Vendor JS-->
+<script src="vendor/datepicker/moment.min.js"></script>
+<script src="vendor/datepicker/daterangepicker.js"></script>
+<!-- Main JS-->
+<script src="js/global.js"></script>
+
+<!-- JQuery Library  -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<!-- Popper JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $('#role2').click(function() {
+    $("#exp").show();
+  });
+</script>
+
+</body>
+</html>

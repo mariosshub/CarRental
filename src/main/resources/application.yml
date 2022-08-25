@@ -1,0 +1,22 @@
+# PostgreSQL connection properties
+spring:
+  datasource:
+    url: YOURCONNECTIONURL
+    username: YOURUSERNAME
+    password: YOURPASSWORD
+
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+# JWT Property
+jwt:
+  expiration:
+    time: 900000
