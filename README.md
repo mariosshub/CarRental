@@ -15,67 +15,67 @@ After a rental is complete, both the car owner and the renter can comment and ra
 
 ## Screenshots
 <figure>
-  <img src="images/Homepage.jpg" width="70%">
+  <img src="images/Homepage.jpg" width="90%">
   <figcaption>Fig.1 - Homepage.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/Register.jpg" width="70%">
+  <img src="images/Register.jpg" width="90%">
   <figcaption>Fig.2 - Register form.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/Login.jpg" width="70%">
+  <img src="images/Login.jpg" width="90%">
   <figcaption>Fig.3 - Login form.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/LoggedInOwner.jpg" width="70%">
+  <img src="images/LoggedInOwner.jpg" width="90%">
   <figcaption>Fig.4 - Owner's main page.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/Profile.jpg" width="70%">
+  <img src="images/Profile.jpg" width="90%">
   <figcaption>Fig.5 - Owner's Profile.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/OwnersCars.jpg" width="70%">
+  <img src="images/OwnersCars.jpg" width="90%">
   <figcaption>Fig.6 - Owner's car management page.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/OwnersTransactions.jpg" width="70%">
+  <img src="images/OwnersTransactions.jpg" width="90%">
   <figcaption>Fig.7 - Owner's trasnactions table.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/LoggedInRenter.jpg" width="70%">
+  <img src="images/LoggedInRenter.jpg" width="90%">
   <figcaption>Fig.8 - Renter's main page.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/CarsRenter.jpg" width="70%">
+  <img src="images/CarsRenter.jpg" width="90%">
   <figcaption>Fig.9 - Available cars for rent page.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/CarDetails1.jpg" width="70%">
+  <img src="images/CarDetails1.jpg" width="90%">
   <figcaption>Fig.10.1 - Details of the selected car.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/CarDetails2.jpg" width="70%">
+  <img src="images/CarDetails2.jpg" width="90%">
   <figcaption>Fig.10.2 - Details of the selected car and the rental form.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/CarsRented.jpg" width="70%">
+  <img src="images/CarsRented.jpg" width="90%">
   <figcaption>Fig.11 - Table of the rented cars.</figcaption>
 </figure>
 <br><br>
 <figure>
-  <img src="images/Review.jpg" width="70%">
+  <img src="images/Review.jpg" width="90%">
   <figcaption>Fig.12 - Review and rating form.</figcaption>
 </figure>
 
